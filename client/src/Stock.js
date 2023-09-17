@@ -1,10 +1,13 @@
 import {useParams} from "react-router-dom";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 
 function Stock(props) {
 
     let {company} = useParams();
+    const location = useLocation()
+    const { stock } = location.state
 
     const [sidebarVisible, setVisibileSidebar] = useState(false)
 
@@ -195,20 +198,6 @@ function Stock(props) {
                     </a>
                 </li>
 
-                <li>
-                    <a href="" class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clip-rule="evenodd"></path></svg>
-                        <span class="ml-3" sidebar-toggle-item>X</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clip-rule="evenodd"></path></svg>
-                        <span class="ml-3" sidebar-toggle-item>X</span>
-                    </a>
-                </li>
-
                 </ul>
 
                 <div class="pt-2 space-y-2">
@@ -217,7 +206,6 @@ function Stock(props) {
                     <span class="ml-3" sidebar-toggle-item>Support</span>
                 </a>
                 </div>
-
 
             </div>
 
@@ -256,19 +244,41 @@ function Stock(props) {
             <div class="flex items-center justify-between mb-4">
             
             <div class="flex-shrink-0">
-                <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">$45,385</span>
-                <h3 class="text-base font-light text-gray-500 dark:text-gray-400">Sales this week</h3>
-            </div>
-            
-            <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
-                12.5%
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                    d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z"
-                    clip-rule="evenodd"></path>
-                </svg>
+                <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">{stock['ticker']}</span>
+                <h3 class="text-base font-light text-gray-500 dark:text-gray-400">NASDAQ</h3>
             </div>
 
+            
+            <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">                
+                <div class="flex-shrink-0 w-20 h-20">
+                    <img class="w-full h-full rounded-full"
+                        src={stock['logo_url']}
+                        alt="" />
+                </div>
+            </div>
+
+            </div>
+
+            <div class="flex items-center justify-between mb-4">
+            <div class="flex-shrink-0">
+                <span class="text-l font-bold leading-none text-gray-900 sm:text-xl dark:text-white">Hottness: {stock['perception']}</span>
+            </div>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+            <div class="flex-shrink-0">
+                <span class="text-l font-bold leading-none text-gray-900 sm:text-xl dark:text-white">Popularity: {stock['popularity']}</span>
+            </div>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+            <div class="flex-shrink-0">
+                <span class="text-l font-bold leading-none text-gray-900 sm:text-xl dark:text-white">Overall: {stock['overall_rating']}</span>
+            </div>
+
+            <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">                
+                <div class="flex-shrink-0">
+                    Recommendation: {stock['recommend']}
+                </div>
+            </div>
             </div>
 
         </div>
@@ -277,12 +287,11 @@ function Stock(props) {
         <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-1 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div class="flex items-center justify-between mb-4">
             <div class="flex-shrink-0">
-                <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">$45,385</span>
-                <h3 class="text-base font-light text-gray-500 dark:text-gray-400">Sales this week</h3>
+                <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Current Stock Price</span>
             </div>
             
-            <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
-                12.5%
+            <div class="flex items-center justify-end flex-1 text-base text-2xl text-green-500 dark:text-green-400">
+                {stock['current_price']}
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd"
                     d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z"
@@ -296,22 +305,32 @@ function Stock(props) {
         <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-1 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div class="flex items-center justify-between mb-4">
             <div class="flex-shrink-0">
-                <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">$45,385</span>
-                <h3 class="text-base font-light text-gray-500 dark:text-gray-400">Sales this week</h3>
+                <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Description</span>
             </div>
-            
-            <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
-                12.5%
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                    d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z"
-                    clip-rule="evenodd"></path>
-                </svg>
             </div>
 
-            <Link to="" onClick={console.log("ASD")}>kasjdkasjd</Link>
+            <p class='text-white'>{stock['description']}</p>
+        </div>
 
-            </div>
+        {/* data */}
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-1 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        <div class="flex items-center justify-between mb-4">
+        <div class="flex-shrink-0">
+            <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Similar Investments</span>
+        </div>
+        </div>
+        <p class='text-white'>{stock['similar']}</p>
+        </div>
+
+
+                {/* data */}
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-1 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        <div class="flex items-center justify-between mb-4">
+        <div class="flex-shrink-0">
+            <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Online Sentiments</span>
+        </div>
+        </div>
+        <p class='text-white'>{stock['titles']}</p>
         </div>
 
 
@@ -321,9 +340,11 @@ function Stock(props) {
         <div class="grid my-4 grid-cols-2 grid-rows-4 gap-4">
         <div class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800 xl:mb-0">
             <div class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-800 dark:bg-gray-700"></div>
-            <time class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">todo</time>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">todo</h3>
-            <p class="text-base font-normal text-gray-500 dark:text-gray-400">Get started with dozens of web components and interactive elements built on top of Tailwind CSS.</p>
+            <time class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">Help</time>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Confused?</h3>
+            <p class="text-base font-normal text-gray-500 dark:text-gray-400">Investing can be a hard game to figure out. For tips and tricks, feel free to look online, search videos on YouTube,
+          and download a trading app and figure out the basics of how everything works. Use InvestIQ as a tool to inform 
+          your trading decisions.</p>
         </div>
         </div>
 
