@@ -3,7 +3,7 @@ import praw
 from typing import List
 from flair.models import TextClassifier
 from flair.data import Sentence
-from sources.lib.message import Message
+from sources.common.message import Message
 import sources.lib.perception as perc
 
 REDDIT_USERNAME = os.getenv("REDDIT_USERNAME")
