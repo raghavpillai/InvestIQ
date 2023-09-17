@@ -20,6 +20,21 @@ class Twitter:
         self.auth.set_access_token(access_token, access_token_secret)
         self.api = tweepy.API(self.auth, wait_on_rate_limit=True)
 
+    def calculate_perception(self, topic):
+        # # Twitter
+        # twitterMessages = twitter.getMessages(topic)
+        # twitter_sum = 0.0
+        # twitter_perception = 0.0
+        # for twitterMessage in twitterMessages:
+        #     twitter_perception += ((twitterMessage.popularity + 1) * twitterMessage.perception)
+        #     twitter_sum += (twitterMessage.popularity + 1)
+        # if twitter_sum > 10000:
+        #     twitter_val = 1
+        # else:
+        #     twitter_val = twitter_sum / 10000
+        # twitter_perception = twitter_perception / twitter_sum
+        pass
+
     def getMessages(self, topic):
         messages = list()
         for pages in tweepy.Cursor(

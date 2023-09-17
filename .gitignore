@@ -1,2 +1,5 @@
 *.env
-.prettierrc
+__pycache__/
+*.prettierrc
+*.db
+sources/
