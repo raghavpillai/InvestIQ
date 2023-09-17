@@ -1,7 +1,7 @@
 import os
 from typing import List, Dict
 from apiclient.discovery import build
-from sources.common.message import Message
+from sources.lib.message import Message
 import sources.lib.perception as perc
 
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
