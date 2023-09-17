@@ -48,6 +48,8 @@ function Graph(props) {
 
 function Table(props) {
 
+  const [stockData, setStockData] = useState({})
+  
   return (
       <div class="container">
               <div class="overflow-x-auto">
@@ -56,7 +58,7 @@ function Table(props) {
                           <thead>
                               <tr>
                                   <th
-                                      class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                      class="px-5 py-3 border-b-1 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                       Company
                                   </th>
                                   <th
@@ -79,18 +81,21 @@ function Table(props) {
                                   <tr>
                                   <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                       <div class="flex items-center">
+
                                           <div class="flex-shrink-0 w-10 h-10">
                                               <img class="w-full h-full rounded-full"
                                                   src={data['logo_url']}
                                                   alt="" />
                                           </div>
                                           <div class="ml-3">
+                                          <Link to={`/stock/${data['ticker']}`}
+                                                    state={{stock: data}}>
                                               <p class="text-gray-900 whitespace-no-wrap">
-                                                  <Link to={`/stock/${data['ticker']}`}
-                                                    state={{stock: data}}
-                                                  >{data['ticker']}</Link>
+                                                  {data['ticker']}
                                               </p>
+                                              </Link>
                                           </div>
+
                                       </div>
                                   </td>
                                   <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -250,6 +255,7 @@ function App() {
   const [top5hot, setTop5Hot] = useState([])
   const [bottom5hot, setBottom5Hot] = useState([])
   const [top5Overall, setTop5Overall] = useState([])
+  const [toggleState, setState] = useState(false)
 
   // get leaderboard
   useEffect(() => {
@@ -277,7 +283,7 @@ function App() {
     setVisibileSidebar(!sidebarVisible)
   }
 
-  let logolkn = "https://1000logos.net/wp-content/uploads/2021/04/Accenture-logo.png"
+  let logolkn = "https://1000logos.net/wp-content/uploads/2016/10/Logo-Boeing.png"
 
   return (
     <>
@@ -312,6 +318,9 @@ function App() {
           {/* right side */}
           <div class="flex items-center">
               
+                      
+
+
               {/* notifications */}
               <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700">
                 <span class="sr-only">View notifications</span>
@@ -390,7 +399,6 @@ function App() {
                     </div>
                 </a>
               </div>
-
 
               {/* user profile */}
               <div class="flex items-center ml-3">
@@ -542,7 +550,12 @@ function App() {
           <div class="">
             <p class="text-m leading-none text-gray-900 dark:text-white">
               <br/>
-              Accenture's strong stock performance is driven by its reputation for innovation in technology and consulting, its global presence, adaptability to market changes, and a solid financial strategy that includes buybacks and dividends.
+              Boeing's stock is surging due to the aviation industry's post-pandemic recovery, increased demand for commercial aircraft, successful resolution of 737 MAX issues, and ongoing cost-cutting measures, all of which have boosted investor confidence in the company's growth prospects.
+
+
+
+
+
               {/* {topOverall['blurb']} */}
             </p>
           </div>

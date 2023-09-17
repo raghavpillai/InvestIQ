@@ -16,6 +16,26 @@ function Stock(props) {
       console.log(sidebarVisible)
     }
 
+
+    let arr = stock['titles'].split('}, {')
+    let res = []
+    arr.forEach(function(line) {
+        line = line.replace('title\': \'', '')
+        line = line.replace('\', \'source\'', ' | Source:')
+        line = line.replace('[', '')
+        line = line.replace('{', '')
+        line = line.replace('\"', '')
+        line = line.replace('\'', '')
+        line = line.replace('}', '')
+        line = line.replace(']', '')
+        line = line.replace(':', '')
+        line = line.replace('\', \'role\': \'', " | Sentiment: ")
+        line = line.replace('\'', '')
+        line = line.replace('&#39;', '\'')
+        res.push(line)
+    });
+
+
     return (
         <>
 
@@ -29,7 +49,9 @@ function Stock(props) {
                 <svg id="toggleSidebarMobileHamburger" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
                 </button>
                 <a href="" class="flex ml-2 md:mr-24">
+                    <Link to="/">
                 <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white pl-4">InvestIQ</span>
+                </Link>
                 </a>
 
             {/* TODO search */}
@@ -185,7 +207,9 @@ function Stock(props) {
                 <li>
                     <a href="" class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
                         <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+                        <Link to='/'>
                         <span class="ml-3" sidebar-toggle-item>Dashboard</span>
+                        </Link>
                     </a>
                 </li>
 
@@ -194,7 +218,9 @@ function Stock(props) {
                         <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path clip-rule="evenodd" fill-rule="evenodd" d="M8.34 1.804A1 1 0 019.32 1h1.36a1 1 0 01.98.804l.295 1.473c.497.144.971.342 1.416.587l1.25-.834a1 1 0 011.262.125l.962.962a1 1 0 01.125 1.262l-.834 1.25c.245.445.443.919.587 1.416l1.473.294a1 1 0 01.804.98v1.361a1 1 0 01-.804.98l-1.473.295a6.95 6.95 0 01-.587 1.416l.834 1.25a1 1 0 01-.125 1.262l-.962.962a1 1 0 01-1.262.125l-1.25-.834a6.953 6.953 0 01-1.416.587l-.294 1.473a1 1 0 01-.98.804H9.32a1 1 0 01-.98-.804l-.295-1.473a6.957 6.957 0 01-1.416-.587l-1.25.834a1 1 0 01-1.262-.125l-.962-.962a1 1 0 01-.125-1.262l.834-1.25a6.957 6.957 0 01-.587-1.416l-1.473-.294A1 1 0 011 10.68V9.32a1 1 0 01.804-.98l1.473-.295c.144-.497.342-.971.587-1.416l-.834-1.25a1 1 0 01.125-1.262l.962-.962A1 1 0 015.38 3.03l1.25.834a6.957 6.957 0 011.416-.587l.294-1.473zM13 10a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
+                        <Link to='/'>
                         <span class="ml-3" sidebar-toggle-item>Settings</span>
+                        </Link>
                     </a>
                 </li>
 
@@ -299,6 +325,12 @@ function Stock(props) {
                 </svg>
             </div>
             </div>
+            <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+            <div class="flex-shrink-0">
+                <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Market Analysis</span>
+            </div>
+            <br></br>
+            <p class='text-white'>{stock['blurb']}</p>
         </div>
 
         {/* data */}
@@ -319,24 +351,72 @@ function Stock(props) {
             <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Similar Investments</span>
         </div>
         </div>
-        <p class='text-white'>{Array.from(stock['similar']).map(d => "ASd")}</p>
+
+
+
+
+<ul class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+    <li>
+        LMT
+    </li>
+    <li>
+        GD
+    </li>
+    <li>
+        GE
+    </li>
+    <li>
+        HON
+    </li>
+    <li>
+        NOC
+    </li>
+</ul>
+
+        {/* <p class='text-white'>{Array.from(stock['similar']).map(d => d)}</p> */}
         </div>
 
 
-                {/* data */}
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-1 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        {/* data */}
+        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-1 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
         <div class="flex items-center justify-between mb-4">
         <div class="flex-shrink-0">
             <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Online Sentiments</span>
         </div>
         </div>
-        <p class='text-white'>{stock['titles']}</p>
+ <dl class="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
+{
+   res.map(function(data) {
+    return     (<div class="flex flex-col pb-3">
+    {/* <dt class="mb-1 text-green-500 md:text-lg ">Youtube - Positive</dt> */}
+    <dd class="text-lg font-semibold">{data}</dd>
+</div>)
+   })
+}
+</dl>   
+
+{/* <dl class="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
+    <div class="flex flex-col pb-3">
+        <dt class="mb-1 text-green-500 md:text-lg ">Youtube - Positive</dt>
+        <dd class="text-lg font-semibold">Boeing Bear OUTRAGED By $400 Price Target</dd>
+    </div>
+    <div class="flex flex-col py-3">
+        <dt class="mb-1 text-green-500 md:text-lg ">Youtube - Positive</dt>
+        <dd class="text-lg font-semibold">Why BlackRock is BULLISH on Boeing Stock</dd>
+    </div>
+    <div class="flex flex-col pt-3">
+        <dt class="mb-1 text-red-500 md:text-lg ">Reddit - Negative</dt>
+        <dd class="text-lg font-semibold">Why Investors Keep Shorting Boeing More Than Any Other Stock</dd>
+    </div>
+</dl>    */}
+
+        {/* <p class='text-white'>{Array.from(stock['titles']).map(d => d)}</p> */}
         </div>
 
 
         </div>
 
-        {/* put some bullshit in this one without it formatting breaks */}
+
         <div class="grid my-4 grid-cols-2 grid-rows-4 gap-4">
         <div class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800 xl:mb-0">
             <div class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-800 dark:bg-gray-700"></div>
