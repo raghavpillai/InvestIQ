@@ -55,6 +55,13 @@ class News:
             total_results: int = all_articles.get("totalResults", 0)
             message: Message = Message(perception, total_results, "News")
             messages.append(message)
+        
+        messages.sort(key=lambda x: x.perception)
+        top_3: List[str] = [message.content for message in messages[-3:]]
+        bottom_3: List[str] = [message.content for message in messages[:3]]
+        print(top_3)
+        print(bottom_3)
+
         return messages
 
     @staticmethod
