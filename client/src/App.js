@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 
@@ -9,10 +9,39 @@ import { Link } from 'react-router-dom';
 function App() {
 
   const [sidebarVisible, setVisibileSidebar] = useState(false)
+  const [dbUpdated, setDbUpdated] = useState(false)
+  const [stockData, setStockData] = useState({})
+  const [leaderboard, setLeaderboard] = useState({})
+
+  // useEffect(() => {
+  //   // populate DB but only run once
+  //   const requestOptions = {
+  //     method: 'POST',
+  //   }
+  //   fetch('http://localhost:5000/api/v1/scraper', requestOptions)
+  //   .then(response => response.json())  
+  //   .then(data => setDbUpdated(data['success']))
+
+  // }, [])
+
+
+  useEffect(() => {
+    if (true) {
+      fetch('http://localhost:5000/api/v1/stock')
+      .then(response => response.json())
+      .then(data => setStockData(data))
+
+      fetch('http://localhost:5000/api/v1/leaderboard')
+      .then(response => response.json())
+      .then(data => setLeaderboard(data))
+    }
+  }, [])
+
+  console.log('obc', dbUpdated)
+  console.log(stockData, leaderboard)
 
   function showSide(e) {
     setVisibileSidebar(!sidebarVisible)
-    console.log(sidebarVisible)
   }
 
   return (
@@ -27,7 +56,7 @@ function App() {
             <button onClick={showSide} id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar" class="p-2 text-gray-600 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
               <svg id="toggleSidebarMobileHamburger" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
             </button>
-            <Link to="/sad" onClick={console.log("ad")}>
+            <Link to="/">
               <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white pl-4">InvestIQ</span>
             </Link>
 
