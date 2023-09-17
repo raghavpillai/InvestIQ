@@ -319,7 +319,7 @@ function Stock(props) {
             <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Similar Investments</span>
         </div>
         </div>
-        <p class='text-white'>{stock['similar']}</p>
+        <p class='text-white'>{Array.from(stock['similar']).map(d => "ASd")}</p>
         </div>
 
 

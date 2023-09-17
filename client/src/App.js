@@ -277,6 +277,8 @@ function App() {
     setVisibileSidebar(!sidebarVisible)
   }
 
+  let logolkn = "https://1000logos.net/wp-content/uploads/2021/04/Accenture-logo.png"
+
   return (
     <>
 
@@ -494,6 +496,13 @@ function App() {
     </aside>
     }
 
+    <div
+      className="relative h-64 md:h-96 lg:h-128 xl:h-144"
+      style={{ backgroundImage: 'url("/path/to/your/image.jpg")' }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-black to-transparent opacity-50" />
+      {/* Content inside the div */}
+    </div>
 
 
   <div class="px-4 pt-6">
@@ -502,16 +511,12 @@ function App() {
 
 
       {/* todays top pick */}
-      <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-4 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+      <div class="bg-gradient-to-r from-cyan-500 to-blue-500   p-4 bg-white border border-gray-200 rounded-lg shadow-sm col-span-4 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
         
         <div class="flex items-center justify-between mb-4">
           
           <div class="flex-shrink-0">
             <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">Today's Top Pick</span>
-          </div>
-
-          <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">            
-            <img class="w-40 h-10" src={topOverall['logo_url']} alt="CompanyImg"/>
           </div>
           
           <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
@@ -526,12 +531,19 @@ function App() {
 
         </div>
 
+        <div class="flex items-center justify-between">
+          <div class="flex items-center justify-end flex-1 text-base font-medium text-green-500 dark:text-green-400">
+            <img class="w-20 h-10" src={logolkn} alt="CompanyImg"/>
+          </div>
+        </div>
+
         <div class="flex items-center justify-between mb-4">
           
           <div class="">
             <p class="text-m leading-none text-gray-900 dark:text-white">
-              {/* Accenture's strong stock performance is driven by its reputation for innovation in technology and consulting, its global presence, adaptability to market changes, and a solid financial strategy that includes buybacks and dividends. */}
-              {topOverall['blurb']}
+              <br/>
+              Accenture's strong stock performance is driven by its reputation for innovation in technology and consulting, its global presence, adaptability to market changes, and a solid financial strategy that includes buybacks and dividends.
+              {/* {topOverall['blurb']} */}
             </p>
           </div>
 
