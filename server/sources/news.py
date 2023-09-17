@@ -50,6 +50,7 @@ class News:
             language="en",
             page_size=100,
         )
+        
         for article in all_articles.get("articles", []):
             perception: float = self._calculate_perception(article.get("title", ""))
             total_results: int = all_articles.get("totalResults", 0)
