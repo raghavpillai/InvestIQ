@@ -3,6 +3,8 @@ import praw
 from typing import List
 from flair.models import TextClassifier
 from flair.data import Sentence
+from sources.lib.message import Message
+import sources.lib.perception as perc
 
 REDDIT_USERNAME = os.getenv("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.getenv("REDDIT_PASSWORD")
@@ -10,14 +12,6 @@ REDDIT_APP_ID = os.getenv("REDDIT_APP_ID")
 REDDIT_APP_SECRET = os.getenv("REDDIT_APP_SECRET")
 
 classifier: TextClassifier = TextClassifier.load("en-sentiment")
-
-
-class Message:
-    def __init__(self, perception: float, popularity: int, platform: str, content: str):
-        self.perception: float = perception
-        self.popularity: int = popularity
-        self.platform: str = platform
-        self.content: str = content
 
 
 class Reddit:
@@ -47,32 +41,17 @@ class Reddit:
         
         return perception, value
 
-    def get_messages(self, stock_ticker: str) -> List[Message]:
+    def get_messages(self, company_name: str) -> List[Message]:
         messages: List[Message] = []
         for submission in self.subreddit.search(
-            query=stock_ticker, sort="relevance", time_filter="week"
+            query=f"{company_name} stock", sort="relevance", time_filter="week"
         ):
-            perception: float = self._calculate_perception(submission.title)
+            perception: float = perc.calculate_perception(submission.title)
             message: Message = Message(perception, submission.score, "Reddit", submission.title)
             messages.append(message)
 
         messages.sort(key=lambda x: x.perception)
-        top_3: List[str] = [message.content for message in messages[-3:]]
-        bottom_3: List[str] = [message.content for message in messages[:3]]
-        print(top_3)
-        print(bottom_3)
+        self.top_titles: List[str] = [message.content for message in messages[-3:]]
+        self.bottom_titles: List[str] = [message.content for message in messages[:3]]
 
         return messages
-
-    @staticmethod
-    def _calculate_perception(title: str) -> float:
-        sentence: Sentence = Sentence(title)
-        classifier.predict(sentence)
-        label = sentence.labels[0]
-
-        if label.score < 0.8:
-            return 0
-        elif label.value == "POSITIVE":
-            return 1
-        else:
-            return -1

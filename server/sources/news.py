@@ -3,17 +3,12 @@ from typing import List
 from newsapi import NewsApiClient
 from flair.models import TextClassifier
 from flair.data import Sentence
+from sources.lib.message import Message
+import sources.lib.perception as perc
 
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
 classifier: TextClassifier = TextClassifier.load("en-sentiment")
-
-
-class Message:
-    def __init__(self, perception: float, popularity: int, platform: str) -> None:
-        self.perception: float = perception
-        self.popularity: int = popularity
-        self.platform: str = platform
 
 
 class News:
@@ -41,39 +36,25 @@ class News:
         
         return perception, value
 
-    def get_messages(self, topic: str) -> List[Message]:
+    def get_messages(self, company_name: str) -> List[Message]:
         messages: List[Message] = []
         all_articles: dict = self.api.get_everything(
-            qintitle=topic,
-            from_param="2023-09-03",
-            to="2023-09-03",
+            qintitle=f"{company_name} stock",
+            from_param="2023-08-17",
+            to="2023-09-17",
             language="en",
             page_size=100,
         )
         
         for article in all_articles.get("articles", []):
-            perception: float = self._calculate_perception(article.get("title", ""))
+            perception: float = perc.calculate_perception(article.get("title", ""))
             total_results: int = all_articles.get("totalResults", 0)
-            message: Message = Message(perception, total_results, "News")
+            message: Message = Message(perception, total_results, "News", article.get("title", ""))
             messages.append(message)
         
         messages.sort(key=lambda x: x.perception)
-        top_3: List[str] = [message.content for message in messages[-3:]]
-        bottom_3: List[str] = [message.content for message in messages[:3]]
-        print(top_3)
-        print(bottom_3)
+        self.top_titles: List[str] = [message.content for message in messages[-3:]]
+        self.bottom_titles: List[str] = [message.content for message in messages[:3]]
 
         return messages
-
-    @staticmethod
-    def _calculate_perception(title: str) -> float:
-        sentence: Sentence = Sentence(title)
-        classifier.predict(sentence)
-        label = sentence.labels[0]
-
-        if label.score < 0.8:
-            return 0
-        elif label.value == "POSITIVE":
-            return 1
-        else:
-            return -1
+    

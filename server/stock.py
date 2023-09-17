@@ -4,7 +4,8 @@ import dotenv
 import os
 import math
 import openai
-from typing import List, Dict
+from difflib import SequenceMatcher
+from typing import List, Dict, Tuple
 
 dotenv.load_dotenv()
 from sources.news import News
@@ -94,7 +95,6 @@ class Stock:
         self.market_cap = stock_details.get("marketcap")
         self.similar = stock_details.get("similar")
         self.logo = stock_details.get("logo")
-        print(stock_details)
 
         open_price = stock_data.get("regularMarketOpen")
         close_price = stock_data.get("previousClose")
@@ -130,9 +130,42 @@ class Stock:
             * pow(math.tanh(8 * total_score * total_perception), 2)
         )  # Overall Rating = tanh^2(constant * popularity * perception) * 100 * -1 if perception is negative, this gives a range from [-100, 100]
 
+        def similarity_ratio(a: str, b: str) -> float:
+            return SequenceMatcher(a=a.lower(), b=b.lower()).ratio()
+        
+        top_overall_titles: List[Tuple[str, str]] = [(title, "youtube") for title in youtube.top_titles] + \
+                                                    [(title, "reddit") for title in reddit.top_titles] + \
+                                                    [(title, "news") for title in news.top_titles]
+
+        bottom_overall_titles: List[Tuple[str, str]] = [(title, "youtube") for title in youtube.bottom_titles] + \
+                                                    [(title, "reddit") for title in reddit.bottom_titles] + \
+                                                    [(title, "news") for title in news.bottom_titles]
+
+        top_overall_titles.sort(key=lambda x: similarity_ratio(x[0], self.name), reverse=True)
+        bottom_overall_titles.sort(key=lambda x: similarity_ratio(x[0], self.name), reverse=True)
+
         self.perception: float = round(total_perception, 2)
         self.popularity: float = round(total_score * 100, 2)
         self.overall_rating: float = round(overall_rating * 100, 2)
+
+        if self.perception > 0:
+            majority_role = "positive"
+            minority_role = "negative"
+            majority_titles = top_overall_titles
+            minority_titles = bottom_overall_titles
+        else:
+            majority_role = "negative"
+            minority_role = "positive"
+            majority_titles = bottom_overall_titles
+            minority_titles = top_overall_titles
+
+        # Select the top titles based on perception
+        titles_to_show: List[Dict[str, str]] = [
+            {"title": majority_titles[0][0], "source": majority_titles[0][1], "role": majority_role},
+            {"title": majority_titles[1][0], "source": majority_titles[1][1], "role": majority_role},
+            {"title": minority_titles[0][0], "source": minority_titles[0][1], "role": minority_role},
+        ]
+        self.titles = titles_to_show
 
     def _get_stock_info(self) -> Dict[str, str]:
         response: requests.Response = requests.get(

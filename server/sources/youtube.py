@@ -1,19 +1,10 @@
 import os
 from typing import List, Dict
 from apiclient.discovery import build
-from flair.models import TextClassifier
-from flair.data import Sentence
+from sources.lib.message import Message
+import sources.lib.perception as perc
 
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-
-classifier: TextClassifier = TextClassifier.load("en-sentiment")
-
-
-class Message:
-    def __init__(self, perception: float, popularity: int, platform: str):
-        self.perception: float = perception
-        self.popularity: int = popularity
-        self.platform: str = platform
 
 
 class Youtube:
@@ -36,16 +27,16 @@ class Youtube:
         
         return perception, value
     
-    def get_messages(self, topic: str) -> List[Message]:
+    def get_messages(self, company_name: str) -> List[Message]:
         messages: List[Message] = []
         titles: List[str] = []
         video_ids: List[str] = []
-        titles, video_ids = self._fetch_video_titles_and_ids(topic)
+        titles, video_ids = self._fetch_video_titles_and_ids(f"{company_name} stock")
         video_statistics: List[dict] = self._fetch_video_statistics(video_ids)
 
         for index, stats in enumerate(video_statistics):
             title: str = titles[index]
-            perception: float = self._calculate_perception(title)
+            perception: float = perc.calculate_perception(title)
             popularity: int = int(stats["statistics"]["viewCount"])
 
             if "likeCount" in stats["statistics"]:
@@ -58,14 +49,17 @@ class Youtube:
                 like_dislike_ratio: float = 1
 
             perception *= like_dislike_ratio
-            message: Message = Message(perception, popularity, "Youtube")
+            message: Message = Message(perception, popularity, "YouTube", title)
             messages.append(message)
+        
+        self.top_titles: List[str] = [message.content for message in messages[-3:]]
+        self.bottom_titles: List[str] = [message.content for message in messages[:3]]
 
         return messages
 
-    def _fetch_video_titles_and_ids(self, topic: str) -> (List[str], List[str]):
+    def _fetch_video_titles_and_ids(self, company_name: str) -> (List[str], List[str]):
         title_request: build = self.youtube.search().list(
-            q=topic,
+            q=company_name,
             part="snippet",
             type="video",
             publishedAfter="2021-11-07T00:00:00Z",
@@ -83,19 +77,6 @@ class Youtube:
         )
         response: Dict[str, List[Dict]] = statistics_request.execute()
         return response["items"]
-
-    @staticmethod
-    def _calculate_perception(title: str) -> float:
-        sentence: Sentence = Sentence(title)
-        classifier.predict(sentence)
-        label = sentence.labels[0]
-
-        if label.score < 0.8:
-            return 0
-        elif label.value == "POSITIVE":
-            return 1
-        else:
-            return -1
 
     @staticmethod
     def _calculate_like_dislike_ratio(likes: int, dislikes: int) -> float:

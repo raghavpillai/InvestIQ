@@ -28,6 +28,7 @@ class Scraper:
             "perception": "FLOAT",
             "popularity": "INT",
             "overall_rating": "FLOAT",
+            "titles": "TEXT"
         }
 
         # Connect to the SQLite database
@@ -59,12 +60,12 @@ class Scraper:
         stock = Stock(stock_ticker)
         stock.populate()
         conn.execute(
-            f"INSERT OR REPLACE INTO {TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+            f"INSERT OR REPLACE INTO {TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
             (
                 stock_ticker,
                 stock.market_cap,
                 stock.description,
-                ','.join(stock.similar),
+                str(stock.similar),
                 stock.current_price,
                 stock.growth,
                 stock.recommend,
@@ -73,7 +74,8 @@ class Scraper:
                 stock.analyst_count,
                 stock.perception,
                 stock.popularity,
-                stock.overall_rating
+                stock.overall_rating,
+                str(stock.titles)
             )
         )
         conn.commit()
@@ -84,7 +86,8 @@ class Scraper:
         table = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
         
         tickers = table['Symbol'].tolist()
-        return tickers[:1]
+        # return tickers[:2]
+        return ["AAPL", "TSLA"]
 
 if __name__ == "__main__":
     tickers = Scraper.populate_database(overwrite=True)
