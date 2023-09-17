@@ -1,5 +1,10 @@
 *.env
+<<<<<<< Updated upstream
 __pycache__/
 *.prettierrc
 *.db
 sources/
+=======
+.prettierrc
+node_modules
+>>>>>>> Stashed changes
