@@ -23,26 +23,26 @@ function Stock(props) {
   let arr = stock["titles"].split("}, {");
   let res = [];
   arr.forEach(function (line) {
-    line = line.replace("title': '", "");
-    line = line.replace("', 'source'", " | Source:");
-    line = line.replace("[", "");
-    line = line.replace("{", "");
-    line = line.replace('"', "");
-    line = line.replace("youtube", "YouTube");
-    line = line.replace("reddit", "Reddit");
-    line = line.replace("news", "News");
-    line = line.replace("positive'", "Positive");
-    line = line.replace("negative'", "Negative");
-    line = line.replace("\", \'source\': \'", " | Source: ");
-    line = line.replace("'", "");
-    line = line.replace("}", "");
-    line = line.replace("]", "");
-    line = line.replace(":", "");
-    line = line.replace("', 'role': '", " | Sentiment: ");
-    line = line.replace("'", "");
-    line = line.replace("&#39;", "'");
-    line = line.replace("title ", "");
-    line = line.replace("Source::", "Source:");
+    line = line.replace("title': '", "")
+    .replace("', 'source'", " | Source:")
+    .replace("[", "")
+    .replace("{", "")
+    .replace('"', "")
+    .replace("youtube", "YouTube")
+    .replace("reddit", "Reddit")
+    .replace("news", "News")
+    .replace("positive'", "Positive")
+    .replace("negative'", "Negative")
+    .replace("\", 'source': '", " | Source: ")
+    .replace("'", "")
+    .replace("}", "")
+    .replace("]", "")
+    .replace(":", "")
+    .replace("', 'role': '", " | Sentiment: ")
+    .replace("'", "")
+    .replace("&#39;", "'")
+    .replace("title ", "")
+    .replace("Source::", "Source:");
     res.push(line);
   });
 
