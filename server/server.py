@@ -1,15 +1,16 @@
 # Make a flask server
-from flask import Flask, request
 import sqlite3
-from scraper import Scraper
 from typing import Tuple, Dict, List
+from flask import Flask, request
+from scraper import Scraper
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
+
 @app.route("/")
 def home():
-    return "Hello, World!"
+    return "Routes: /api/v1/scraper, /api/v1/stock, /api/v1/leaderboard"
 
 # Post request to call scraper
 @app.route("/api/v1/scraper", methods=["POST"])
@@ -49,7 +50,7 @@ def leaderboard() -> Dict[str, str]:
     cursor.execute("SELECT * FROM stocks ORDER BY overall_rating DESC LIMIT 5")
     top_5_overall_rating: List[Tuple[str, float]] = cursor.fetchall()
 
-    column_names = [column[0] for column in cursor.description]
+    column_names: List[str] = [column[0] for column in cursor.description]
     
     data: Dict[str, str] = {
         "success": True,

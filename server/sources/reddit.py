@@ -35,8 +35,11 @@ class Reddit:
         
         if total_sum > 10000:
             value: float = 1
+        elif total_sum == 0:
+            return 0,0
         else:
             value: float = total_sum / 10000
+        
         perception = perception / total_sum
         
         return perception, value

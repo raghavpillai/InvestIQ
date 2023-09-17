@@ -13,8 +13,8 @@ class Scraper:
 
     @classmethod
     def populate_database(cls, overwrite: bool=False) -> bool:
-        tickers = cls._get_sp500_tickers()
-        fields = {
+        tickers: List[str] = cls._get_sp500_tickers()
+        fields: Dict[str, str] = {
             "ticker": "TEXT PRIMARY KEY",
             "market_cap": "FLOAT",
             "description": "TEXT",
@@ -32,7 +32,7 @@ class Scraper:
         }
 
         # Connect to the SQLite database
-        conn = sqlite3.connect(DATABASE_NAME)
+        conn: sqlite3.Connection = sqlite3.connect(DATABASE_NAME)
 
         # Create a table if it doesn't exist
         create_table_sql = f"CREATE TABLE IF NOT EXISTS {TABLE_NAME} ({','.join([f'{name} {value}' for name, value in fields.items()])})"
@@ -42,7 +42,7 @@ class Scraper:
 
         def process_ticker(ticker: str) -> None:
             conn: sqlite3.Connection = sqlite3.connect(DATABASE_NAME) # Threads!
-            if not overwrite and not conn.execute(f"SELECT * FROM {create_table_sql} WHERE ticker = ?", (ticker,)).fetchone():
+            if not overwrite and conn.execute(f"SELECT * FROM {TABLE_NAME} WHERE ticker = ?", (ticker,)).fetchone():
                 return
             try:
                 cls.send_to_database(ticker, conn)
@@ -57,7 +57,7 @@ class Scraper:
 
     @classmethod
     def send_to_database(cls, stock_ticker: str, conn: sqlite3.Connection) -> None:
-        stock = Stock(stock_ticker)
+        stock: Stock = Stock(stock_ticker)
         stock.populate()
         conn.execute(
             f"INSERT OR REPLACE INTO {TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
@@ -83,12 +83,11 @@ class Scraper:
 
     @classmethod
     def _get_sp500_tickers(cls) -> List[str]:
-        table = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
+        table: pd.DataFrame = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
         
-        tickers = table['Symbol'].tolist()
-        # return tickers[:2]
-        return ["AAPL", "TSLA"]
+        tickers: List[str] = table['Symbol'].tolist()
+        return tickers[:50]
 
 if __name__ == "__main__":
-    tickers = Scraper.populate_database(overwrite=True)
+    tickers = Scraper.populate_database(overwrite=False)
     print(tickers)

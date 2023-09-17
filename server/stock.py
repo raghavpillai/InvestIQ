@@ -73,7 +73,7 @@ class Stock:
             frequency_penalty=0,
             presence_penalty=0,
         )
-        print(response.choices[0].message.content)
+        # print(response.choices[0].message.content)
         return response.choices[0].message.content
 
     def populate(self):
@@ -117,18 +117,19 @@ class Stock:
         )
         news_perception, news_popularity = news.calculate_perception(self.name)
 
-        total_score: float = (
-            (((reddit_popularity + youtube_popularity) / 2) + news_popularity) / 1.25
-        ) + 0.3
+        total_popularity: float = (
+            (reddit_popularity + youtube_popularity + news_popularity) / 3
+        )
         total_perception: float = (
-            (((reddit_perception + youtube_popularity) / 2) + news_perception) / 2
+            (reddit_perception + youtube_perception + news_perception) / 3
         ) + 0.2
+        print(f"Perception: {total_perception}")
+        print(f"Popularity: {total_popularity}")
 
         overall_rating: float = (
-            abs(total_perception)
-            / total_perception
-            * pow(math.tanh(8 * total_score * total_perception), 2)
-        )  # Overall Rating = tanh^2(constant * popularity * perception) * 100 * -1 if perception is negative, this gives a range from [-100, 100]
+            total_perception * pow(math.tanh(8 * total_popularity * total_perception), 2)
+        )
+        overall_rating = min(max(overall_rating, -0.98), 0.98)
 
         def similarity_ratio(a: str, b: str) -> float:
             return SequenceMatcher(a=a.lower(), b=b.lower()).ratio()
@@ -144,8 +145,8 @@ class Stock:
         top_overall_titles.sort(key=lambda x: similarity_ratio(x[0], self.name), reverse=True)
         bottom_overall_titles.sort(key=lambda x: similarity_ratio(x[0], self.name), reverse=True)
 
-        self.perception: float = round(total_perception, 2)
-        self.popularity: float = round(total_score * 100, 2)
+        self.perception: float = round(total_perception * 100, 2)
+        self.popularity: float = round(total_popularity * 100, 2)
         self.overall_rating: float = round(overall_rating * 100, 2)
 
         if self.perception > 0:
