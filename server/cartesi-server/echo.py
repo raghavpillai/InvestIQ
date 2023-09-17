@@ -18,6 +18,7 @@ import sys
 import sqlite3
 sys.path.append("..")
 from typing import List, Dict, Tuple
+from scraper import Scraper
 
 dotenv.load_dotenv()
 logging.basicConfig(level="INFO")
@@ -53,6 +54,10 @@ def handle_inspect(data):
     response = requests.post(rollup_server + "/report", json=report)
     logger.info(f"Received report status {response.status_code}")
     return "accept"
+
+def scraper() -> Dict[str, bool]: # Initialize scraper
+    populated: bool = Scraper.populate_database()
+    return {"success": populated}
 
 def return_leaderboard(data):
     conn: sqlite3.Connection = sqlite3.connect("local.db")
