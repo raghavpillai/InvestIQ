@@ -30,18 +30,14 @@ file_handler = logging.FileHandler(log_file)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-print("HI!!!!!!!!!")
 
 rollup_server = environ["ROLLUP_HTTP_SERVER_URL"]
 logger.info(f"HTTP rollup_server url is {rollup_server}")
-
-notices = []
 
 def handle_advance(data):
     logger.info(f"Received advance request data {data}")
     logger.info("Adding notice")
     notice = {"payload": data["payload"]}
-    notices.append(notice)
     response = requests.post(rollup_server + "/notice", json=notice)
     logger.info(f"Received notice status {response.status_code} body {response.content}")
     return "accept"
@@ -50,7 +46,6 @@ def handle_inspect(data):
     logger.info(f"Received inspect request data {data}")
     logger.info("Adding report")
     report = {"payload": data["payload"]}
-    notices.append(report)
     response = requests.post(rollup_server + "/report", json=report)
     logger.info(f"Received report status {response.status_code}")
     return "accept"
@@ -105,3 +100,8 @@ while True:
         
         handler = handlers[rollup_request["request_type"]]
         finish["status"] = handler(rollup_request["data"])
+        if data == "leaderboard":
+            return_leaderboard(data)
+        elif data == "scrape":
+            populated: bool = Scraper.populate_database()
+            print({"success": populated})
