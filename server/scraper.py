@@ -16,6 +16,7 @@ class Scraper:
         tickers: List[str] = cls._get_sp500_tickers()
         fields: Dict[str, str] = {
             "ticker": "TEXT PRIMARY KEY",
+            "name": "TEXT",
             "market_cap": "FLOAT",
             "description": "TEXT",
             "similar": "TEXT",
@@ -50,8 +51,10 @@ class Scraper:
                 print(e)
                 print(f"Unable to write stock info for {ticker}")
 
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.map(process_ticker, tickers)
+        # with concurrent.futures.ThreadPoolExecutor() as executor:
+        #     executor.map(process_ticker, tickers)
+        for ticker in tickers:
+            process_ticker(ticker)
             
         return True
 
@@ -60,9 +63,10 @@ class Scraper:
         stock: Stock = Stock(stock_ticker)
         stock.populate()
         conn.execute(
-            f"INSERT OR REPLACE INTO {TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+            f"INSERT OR REPLACE INTO {TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
             (
                 stock_ticker,
+                stock.name,
                 stock.market_cap,
                 stock.description,
                 str(stock.similar),
@@ -86,7 +90,10 @@ class Scraper:
         table: pd.DataFrame = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
         
         tickers: List[str] = table['Symbol'].tolist()
-        return tickers[:50]
+        import random
+        random.shuffle(tickers)
+
+        return tickers[:10]
 
 if __name__ == "__main__":
     tickers = Scraper.populate_database(overwrite=False)

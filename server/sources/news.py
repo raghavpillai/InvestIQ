@@ -1,15 +1,10 @@
 import os
 from typing import List
 from newsapi import NewsApiClient
-from flair.models import TextClassifier
-from flair.data import Sentence
 from sources.lib.message import Message
 import sources.lib.perception as perc
 
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
-
-classifier: TextClassifier = TextClassifier.load("en-sentiment")
-
 
 class News:
     def __init__(self) -> None:

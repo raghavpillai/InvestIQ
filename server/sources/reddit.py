@@ -1,8 +1,6 @@
 import os
 import praw
 from typing import List
-from flair.models import TextClassifier
-from flair.data import Sentence
 from sources.lib.message import Message
 import sources.lib.perception as perc
 
@@ -10,8 +8,6 @@ REDDIT_USERNAME = os.getenv("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.getenv("REDDIT_PASSWORD")
 REDDIT_APP_ID = os.getenv("REDDIT_APP_ID")
 REDDIT_APP_SECRET = os.getenv("REDDIT_APP_SECRET")
-
-classifier: TextClassifier = TextClassifier.load("en-sentiment")
 
 
 class Reddit:
@@ -41,7 +37,6 @@ class Reddit:
             value: float = total_sum / 10000
         
         perception = perception / total_sum
-        
         return perception, value
 
     def get_messages(self, company_name: str) -> List[Message]:

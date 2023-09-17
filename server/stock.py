@@ -53,7 +53,7 @@ class Stock:
         
         stock_data["name"] = self.name
         
-        return "Insert blurb here"
+        # return "Insert blurb here"
 
         response: Dict[str, str] = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -90,8 +90,9 @@ class Stock:
             return
 
         print(f"Retrieving stock info for {self.ticker}")
+        print(stock_details)
 
-        self.name = stock_details.get("name")
+        self.name = stock_details.get("name") or self.ticker
         self.market_cap = stock_details.get("marketcap")
         self.similar = stock_details.get("similar")
         self.logo = stock_details.get("logo")
@@ -126,10 +127,17 @@ class Stock:
         print(f"Perception: {total_perception}")
         print(f"Popularity: {total_popularity}")
 
-        overall_rating: float = (
-            total_perception * pow(math.tanh(8 * total_popularity * total_perception), 2)
-        )
-        overall_rating = min(max(overall_rating, -0.98), 0.98)
+        def apply_bias(score, bias_factor):
+            return score * math.exp(bias_factor * abs(score))
+
+        # Go higher/lower as needed
+        bias_factor = 0.2
+
+        biased_perception = apply_bias(total_perception, bias_factor)
+        biased_popularity = apply_bias(total_popularity, bias_factor)
+
+        overall_rating = (biased_perception + biased_popularity) / 2
+        overall_rating = min(max(overall_rating, -0.98), 0.98) # Clamp
 
         def similarity_ratio(a: str, b: str) -> float:
             return SequenceMatcher(a=a.lower(), b=b.lower()).ratio()
@@ -141,13 +149,14 @@ class Stock:
         bottom_overall_titles: List[Tuple[str, str]] = [(title, "youtube") for title in youtube.bottom_titles] + \
                                                     [(title, "reddit") for title in reddit.bottom_titles] + \
                                                     [(title, "news") for title in news.bottom_titles]
-
+        print(top_overall_titles)
+        print(bottom_overall_titles)
         top_overall_titles.sort(key=lambda x: similarity_ratio(x[0], self.name), reverse=True)
         bottom_overall_titles.sort(key=lambda x: similarity_ratio(x[0], self.name), reverse=True)
 
-        self.perception: float = round(total_perception * 100, 2)
-        self.popularity: float = round(total_popularity * 100, 2)
-        self.overall_rating: float = round(overall_rating * 100, 2)
+        self.perception = round(total_perception * 100, 2)
+        self.popularity = round(total_popularity * 100, 2)
+        self.overall_rating = round(overall_rating * 100, 2)
 
         if self.perception > 0:
             majority_role = "positive"
