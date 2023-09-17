@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter,  RouterProvider } from "react-router-dom"
-
+import Stock from './Stock';
 
 const router = createBrowserRouter([
   {
@@ -12,8 +12,8 @@ const router = createBrowserRouter([
     element: <App/>
   },
   {
-    path: "/easteregg",
-    element: <div>Hello World</div>
+    path: "/stock/:company",
+    element: <Stock/>
   }
 ])
 
